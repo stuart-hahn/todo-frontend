@@ -19,23 +19,23 @@ const TodoList = () => {
   }, []);
 
   // Handle form submission to create a new todo
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-    // POST request to create a new todo
     axios
-      .post("http://localhost:3000/todos", {
-        title: newTodo,
-        completed: false,
-      })
+      .post("http://localhost:3000/todos", { title: newTodo, completed: false })
       .then((response) => {
-        // Add the new todo to the list of todos
         setTodos([...todos, response.data]);
         setNewTodo("");
       })
       .catch((error) => {
-        console.log("Error creating todo: ", error);
+        console.error("Error creating todo:", error);
       });
+  };
+
+  // Handle deleting a todo
+  const handleDelete = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
   };
 
   return (
@@ -48,9 +48,10 @@ const TodoList = () => {
           onChange={(e) => setNewTodo(e.target.value)}
           placeholder="Enter new todo"
         />
+        <button type="submit">Add Todo</button>
       </form>
       {todos.map((todo) => (
-        <Todo key={todo.id} todo={todo} />
+        <Todo key={todo.id} todo={todo} onDelete={handleDelete} />
       ))}
     </div>
   );
